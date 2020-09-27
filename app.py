@@ -125,6 +125,7 @@ async def login(request):
         "client_id": OAUTH2_CLIENT_ID,
         "response_type": "code",
         "redirect_uri": OAUTH2_REDIRECT_URI,
+        "prompt": "none"
     }
 
     return response.redirect(f"{AUTHORIZATION_BASE_URL}?{urlencode(data)}")
