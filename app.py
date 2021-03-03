@@ -73,7 +73,7 @@ async def fetch_token(code):
 
     headers = {"Content-Type": "x-www-form-urlencoded"}
 
-    async with app.session.post(TOKEN_URL, data=data) as resp:
+    async with app.session.post(TOKEN_URL, data=data, headers=headers) as resp:
         json = await resp.json()
         return json
 
