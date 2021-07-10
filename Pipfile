@@ -10,8 +10,8 @@ sanic = "*"
 dnspython = "*"
 natural = "*"
 sanic-session = "*"
-Jinja2 = "==2.11.3"
-aiohttp = "==3.7.4"
+"Jinja2" = "*"
+aiohttp = "*"
 discord-py = "*"
 
 [dev-packages]
