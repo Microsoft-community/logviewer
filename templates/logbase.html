@@ -120,6 +120,13 @@
                                 </a>
                             </div>
                         {% endfor %}
+                        {% for sticker in message.stickers %}
+                        <div class="chatlog__attachment" id="{{ message.id }}">
+                            <a href="{{ sticker.url }}">
+                                <img class="chatlog__attachment-thumbnail" height="160" width="160" src="{{ sticker.url }}" alt="Sticker: {{ sticker.name }}"/>
+                            </a>
+                        </div>
+                    {% endfor %}
                     {% endfor %}
                 </div>
             </div>

@@ -161,6 +161,11 @@ class Attachment:
             self.is_image = data["is_image"]
             self.size = data["size"]
 
+class Sticker:
+    def __init__(self, data):
+        self.url = data["url"]
+        self.name = data["name"]
+        self.format = data["format"]
 
 class Message:
     def __init__(self, data):
@@ -170,6 +175,10 @@ class Message:
         self.raw_content = data["content"]
         self.content = self.format_html_content(self.raw_content)
         self.attachments = [Attachment(a) for a in data["attachments"]]
+        if "stickers" in data:
+            self.stickers = [Sticker(a) for a in data["stickers"]]
+        else:
+            self.stickers = []
         self.author = User(data["author"])
         self.type = data.get("type", "thread_message")
         self.edited = data.get("edited", False)
