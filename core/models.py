@@ -15,7 +15,7 @@ class LogEntry:
         self.created_at = dateutil.parser.parse(data["created_at"]).replace(tzinfo=None)
         self.human_created_at = duration(self.created_at, now=datetime.now())
         self.closed_at = (
-            dateutil.parser.parse(data["closed_at"]) if not self.open else None
+            dateutil.parser.parse(data["closed_at"]).replace(tzinfo=None) if not self.open else None
         )
         self.channel_id = int(data["channel_id"])
         self.guild_id = int(data["guild_id"])
@@ -35,7 +35,7 @@ class LogEntry:
 
     @property
     def human_closed_at(self):
-        return duration(self.closed_at, now=datetime.utcnow())
+        return duration(self.closed_at, now=datetime.now())
 
     @property
     def message_groups(self):
@@ -163,9 +163,9 @@ class Attachment:
 
 class Sticker:
     def __init__(self, data):
-        self.url = data["url"]
-        self.name = data["name"]
-        self.format = data["format"]
+        self.url = data.get("url")
+        self.name = data.get("name")
+        self.format = data.get("format")
 
 class Message:
     def __init__(self, data):
