@@ -10,7 +10,6 @@ processes = []
 [experimental]
   allowed_public_ports = []
   auto_rollback = true
-  cmd = ["python", "app.py"]
   private_network = true
 
 [[services]]
