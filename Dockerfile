@@ -1,16 +1,16 @@
-FROM python:3.9-alpine as py
+FROM python:3.7-alpine3.14
 
-FROM py as build
+RUN apk add --no-cache git build-base linux-headers && \
+    pip install pipenv
 
-RUN apk update && apk add build-base
-COPY requirements.txt /
-RUN pip install --prefix=/inst -U -r /requirements.txt
+RUN adduser -D user
+RUN mkdir -p /usr/src/app && chown user:user /usr/src/app
+WORKDIR /usr/src/app
+USER user
 
-FROM py
+COPY Pipfile* ./
+RUN  pipenv install --deploy --ignore-pipfile
 
-ENV USING_DOCKER yes
-COPY --from=build /inst /usr/local
+COPY . .
 
-WORKDIR /logviewer
-CMD ["python", "app.py"]
-COPY . /logviewer
+CMD ["pipenv", "run", "python", "app.py"]
