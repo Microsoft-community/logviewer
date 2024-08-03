@@ -6,6 +6,8 @@ from natural.date import duration
 
 from core.formatter import format_content_html
 
+import os
+
 
 class LogEntry:
     def __init__(self, app, data):
@@ -116,7 +118,7 @@ class User:
         self.id = int(data.get("id"))
         self.name = data["name"]
         self.discriminator = data["discriminator"]
-        self.avatar_url = data["avatar_url"]
+        self.avatar_url = data["avatar_url"].replace('cdn.discordapp.com/', os.environ['PERMACACHE_LOCATION'])
         self.mod = data["mod"]
 
     @property
@@ -157,7 +159,7 @@ class Attachment:
         else:
             self.id = int(data["id"])
             self.filename = data["filename"]
-            self.url = data["url"]
+            self.url = data["url"].replace('cdn.discordapp.com/', os.environ['PERMACACHE_LOCATION'])
             self.is_image = data["is_image"]
             self.size = data["size"]
 
