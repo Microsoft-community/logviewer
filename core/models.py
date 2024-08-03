@@ -149,7 +149,7 @@ class MessageGroup:
 
 
 class Attachment:
-    def __init__(self, data):
+    def __init__(self, data, author):
         if isinstance(data, str):  # Backwards compatibility
             self.id = 0
             self.filename = "attachment"
@@ -159,7 +159,9 @@ class Attachment:
         else:
             self.id = int(data["id"])
             self.filename = data["filename"]
-            self.url = data["url"].replace('cdn.discordapp.com/', os.environ['PERMACACHE_LOCATION'])
+            self.url = data["url"]
+            if author.mod:
+                self.url = self.url.replace('cdn.discordapp.com/', os.environ['PERMACACHE_LOCATION'])
             self.is_image = data["is_image"]
             self.size = data["size"]
 
@@ -172,17 +174,17 @@ class Sticker:
 class Message:
     def __init__(self, data):
         self.id = int(data["message_id"])
+        self.type = data.get("type", "thread_message")
+        self.author = User(data["author"])
         self.created_at = dateutil.parser.parse(data["timestamp"]).replace(tzinfo=None)
         self.human_created_at = duration(self.created_at, now=datetime.now())
         self.raw_content = data["content"]
         self.content = self.format_html_content(self.raw_content)
-        self.attachments = [Attachment(a) for a in data["attachments"]]
+        self.attachments = [Attachment(a, self.author) for a in data["attachments"]]
         if "stickers" in data:
             self.stickers = [Sticker(a) for a in data["stickers"]]
         else:
             self.stickers = []
-        self.author = User(data["author"])
-        self.type = data.get("type", "thread_message")
         self.edited = data.get("edited", False)
 
     def is_different_from(self, other):
