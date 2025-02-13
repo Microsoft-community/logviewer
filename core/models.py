@@ -162,6 +162,8 @@ class Attachment:
             self.url = data["url"]
             if author.mod:
                 self.url = self.url.replace('cdn.discordapp.com/', os.environ['PERMACACHE_LOCATION'])
+            else:
+                self.url = os.environ['CDN_URL_PREFIX'] + self.url 
             self.is_image = data["is_image"]
             self.size = data["size"]
 
