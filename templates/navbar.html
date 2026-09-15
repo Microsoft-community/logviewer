@@ -12,7 +12,7 @@
                 <i class="material-icons" id='dash'>home</i>
             </a>
 
-            {% if app.using_oauth %}
+            {% if app.ctx.using_oauth %}
             
             <ul class="right hide-on-med-and-down">
                 {% if not session.logged_in %}

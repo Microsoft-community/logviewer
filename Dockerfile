@@ -1,9 +1,8 @@
-FROM python:3.7-alpine3.14
+FROM python:3.14-slim
 
-RUN apk add --no-cache git build-base linux-headers && \
-    pip install pipenv
+RUN pip install --no-cache-dir pipenv
 
-RUN adduser -D user
+RUN useradd --create-home user
 RUN mkdir -p /usr/src/app && chown user:user /usr/src/app
 WORKDIR /usr/src/app
 USER user

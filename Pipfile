@@ -9,7 +9,6 @@ motor = "*"
 sanic = "*"
 dnspython = "*"
 natural = "*"
-sanic-session = "*"
 "Jinja2" = "*"
 aiohttp = "*"
 discord-py = "*"
@@ -17,4 +16,4 @@ discord-py = "*"
 [dev-packages]
 
 [requires]
-python_version = "3.7"
+python_version = "3.14"

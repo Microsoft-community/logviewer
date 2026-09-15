@@ -1,5 +1,5 @@
 from functools import wraps
-from sanic.exceptions import abort
+from sanic.exceptions import Unauthorized
 from sanic import response
 import inspect
 import datetime
@@ -90,33 +90,33 @@ def authrequired():
         async def wrapper(request, key):
             app = request.app
 
-            if not app.using_oauth:
-                return await func(request, await app.db.logs.find_one({"key": key}))
-            elif not request["session"].get("logged_in"):
-                request["session"]["from"] = request.url
+            if not app.ctx.using_oauth:
+                return await func(request, await app.ctx.db.logs.find_one({"key": key}))
+            elif not request.ctx.session.get("logged_in"):
+                request.ctx.session["from"] = request.url
                 return response.redirect("/login")
 
-            user = request["session"]["user"]
+            user = request.ctx.session["user"]
 
             config, document = await asyncio.gather(
-                app.db.config.find_one({"bot_id": int(app.bot_id)}),
-                app.db.logs.find_one({"key": key}),
+                app.ctx.db.config.find_one({"bot_id": int(app.ctx.bot_id)}),
+                app.ctx.db.logs.find_one({"key": key}),
             )
 
-            whitelist = config.get("oauth_whitelist", [])
+            whitelist = (config or {}).get("oauth_whitelist", [])
             if document:
                 whitelist.extend(document.get("oauth_whitelist", []))
 
-            if int(user["id"]) in whitelist or "everyone" in whitelist:
+            if int(user.id) in whitelist or "everyone" in whitelist:
                 return await func(request, document)
 
-            roles = await app.get_user_roles(user["id"])
+            roles = await app.ctx.get_user_roles(user.id)
 
             if any(int(r) in whitelist for r in roles):
                 return await func(request, document)
 
-            abort(
-                401, message="Your account does not have permission to view this page."
+            raise Unauthorized(
+                "Your account does not have permission to view this page."
             )
 
         return wrapper
